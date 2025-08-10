@@ -3,424 +3,766 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>独处刷快手分享量工具</title>
+    <title>独处一键Root工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #ff5722;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
-        button {
-            background-color: #ff5722;
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #8b3a62, #b22222);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
             color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+        }
+        
+        .container {
             width: 100%;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #e64a19;
-        }
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .progress-container {
-            margin-top: 20px;
-            display: none;
-        }
-        .progress-bar {
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 4px;
+            max-width: 420px;
+            background: rgba(0, 5, 15, 极.85);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            margin-bottom: 5px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
         }
-        .progress-fill {
-            height: 100%;
-            background-color: #4caf50;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        .log-container {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            display: none;
-        }
-        .log-entry {
-            margin-bottom: 5px;
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-            font-family: monospace;
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(0, 10, 30, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 14px;
         }
-        .success {
-            color: #4caf50;
+        
+        .header {
+            text-align: center;
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.5);
         }
-        .error {
-            color: #f44336;
+        
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #ffd700, #ffb700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            margin-bottom: 10px;
         }
-        .warning {
-            color: #ff9800;
+        
+        .version {
+            font-size: 16px;
+            color: #aaa;
         }
-        .info {
-            color: #2196f3;
+        
+        .content {
+            padding: 30px 25px;
+            min-height: 300px;
         }
-        .result-container {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            display: none;
+        
+        .input-section {
+            margin: 25px 0 15px;
         }
-        .tips {
-            background-color: #fff8e1;
-            padding: 15px;
-            border-radius: 4px;
+        
+        input {
+            width: 100%;
+            background: rgba(20, 30, 50, 0.7);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 17px;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
             margin-bottom: 20px;
-            border-left: 4px solid #ffc107;
+        }
+        
+        input::placeholder {
+            color: #aaa;
+        }
+        
+        input:focus {
+            border-color: #ffb700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #ffd700, #ff8c00);
+            color: #0a1a30;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 35px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+        }
+        
+        .btn-teal {
+            background: linear-gradient(to right, #0cebeb, #20e3b2);
+            min-width: 170px;
+        }
+        
+        .btn-green {
+            background: linear-gradient(to right, #00c853, #009624);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            opacity: 0.8;
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+        
+        .progress-section {
+            display: none;
+            text-align: center;
+        }
+        
+        .progress-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #ffd700;
+            font-weight: 600;
+       极 }
+        
+        .progress-container {
+            width: 100%;
+            height: 22px;
+            background: rgba(40, 50, 70, 0.8);
+            border-radius: 11px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, #4facfe, #00f2fe, #ffd700);
+            border-radius: 11px;
+            transition: width 0.2s ease;
+            position: relative;
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        .progress-percent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            color: #00ff00;
+            margin-bottom: 25px;
+            text-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        .success-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            margin-bottom: 20px;
+        }
+        
+        .info-text {
+            text-align: center;
+            margin: 15px 0 20px;
+            color: #bbb;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .warning {
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(180, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .error-icon {
+            font-size: 50px;
+            color: #ff3333;
+            margin-bottom: 15px;
+        }
+        
+        .error-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ff9999;
+        }
+        
+        .circle-decoration {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 215, 0, 0.25);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+        
+        .hide-section {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .hide-list {
+            margin-top: 15px;
+            text-align: left;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hide-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(20, 30, 50, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .hide-icon {
+            margin-right: 10px;
+            width: 25px;
+        }
+        
+        .disabled-item {
+            opacity: 0.5;
+        }
+        
+        .countdown-text {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #ffd700;
+        }
+        
+        /* Animations */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(0.95); }
+        }
+        
+        @keyframes pulse-glow {
+            0% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.4; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        
+        @keyframes fadeOutGreen {
+            0% { background: rgba(76, 175, 80, 0.3); }
+            100% { background: transparent; }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .flash-green {
+            animation: fadeOutGreen 1.5s ease-in-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>快手作品分享工具</h1>
-        
-        <div class="tips">
-            <strong>作者：独处</strong>
-            <ol>
-                <li>作者声明：输入快手作品短链接（如：https://v.kuaishou.com/xxxxxx）</li>
-                <li>设置需要分享的次数</li>
-                <li>点击"开始分享"按钮</li>
-                <li>如需绕过浏览器限制，请使用 Chrome 并添加启动参数：<code>--disable-web-security --user-data-dir=/tmp/chrome</code></li>
-            </ol>
-        </div>
-        
-        <div class="form-group">
-            <label for="shortUrl">快手作品链接</label>
-            <input type="text" id="shortUrl" placeholder="https://v.kuaishou.com/xxxxxx">
-        </div>
-        
-        <div class="form-group">
-            <label for="shareCount">分享次数</label>
-            <input type="number" id="shareCount" placeholder="请输入分享次数" min="1" value="100">
-        </div>
-        
-        <button id="startBtn">开始分享</button>
-        <button id="stopBtn" style="background-color: #f44336; display: none;">停止分享</button>
-        
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+        <div class="status-bar">
+            <div class="time" id="currentTime">21:38</div>
+            <div>
+                <i class="fas fa-wifi"></i>
+                <span>5G</span>
+                <i class="fas fa-signal"></i>
+                <span>1.60</span>
             </div>
-            <div id="progressText">0% (0/0)</div>
+            <div>
+                <span id="batteryLevel">82</span>%
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
         </div>
         
-        <div class="log-container" id="logContainer"></div>
+        <div class="header">
+            <div class="title">独处一键Root</div>
+            <div class="version">专业版 v1.1</div>
+        </div>
         
-        <div class="result-container" id="resultContainer">
-            <h3>分享结果</h3>
-            <p>成功次数: <span id="successCount">0</span></p>
-            <p>失败次数: <span id="errorCount">0</span></p>
-            <p>总耗时: <span id="totalTime">0</span> 秒</p>
-            <p>平均速度: <span id="avgSpeed">0</span> 次/秒</p>
+        <div class="content">
+            <!-- 输入手机型号部分手机无法root -->
+            <div id="inputSection" class="input-section">
+                <h2>输入您的手机机型信息</h2>
+                <div class="info-text">
+                    支持主流Android机型一键ROOT<br>
+                    请输入完整的手机型号
+                </div>
+                
+                <input type="text" id="modelInput" placeholder="例如: 一加ace5">
+                
+                <div class="btn-container">
+                    <button class="btn" onclick="startRootProcess()">
+                        <span class="btn-glow"></span>
+                        一键ROOT
+                    </button>
+                </div>
+                
+                <div class="info-text warning">
+                    <i class="fas fa-exclamation-triangle"></i> ROOT操作有风险，请确保手机已备份
+                </div>
+            </div>
+            
+            <!-- BL锁未解锁提示 -->
+            <div id="blLockSection" class="error-message">
+                <div class="error-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="error-text">您的设备Bootloader未解锁！</div>
+                <div class="info-text">
+                    检测到您输入的设备: <span id="detectedModel">未知机型</span><br>
+                    需要解锁Bootloader才能继续ROOT操作
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="unlockBootloader()">
+                        <span class="btn-glow"></span>
+                        立即解锁BL锁
+                    </button>
+                    <button class="btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                </div>
+                
+                <div class="info-text warning">
+                    <i class="fas fa-exclamation-triangle"></i> 解锁BL会清除手机所有数据
+                </div>
+            </div>
+            
+            <!-- 解锁BL进度 -->
+            <div id="unlockProgressSection" class="progress-section">
+                <div class="circle-decoration"></div>
+                <div class="progress-text">正在解锁Bootloader...</div>
+                <div class="progress-container">
+                    <div id="unlockProgressBar" class="progress-bar">
+                        <div id="unlockProgressPercent" class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="info-text">
+                    机型: <span id="unlockModel">未知机型</span><br>
+                    此过程大约需要1-2分钟，请保持设备连接
+                </div>
+            </div>
+            
+            <!-- 刷入阿尔法面具进度 -->
+            <div id="alphaProgressSection" class="progress-section">
+                <div class="circle-decoration"></div>
+                <div class="progress-text">正在刷入阿尔法面具...</div>
+                <div class="progress-container">
+                    <div id="alphaProgressBar" class="progress-bar">
+                        <div id="alphaProgressPercent" class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="info-text">
+                    正在适配: <span id="alphaModel">未知机型</span><br>
+                    此过程需要3-5分钟，请勿断开设备
+                </div>
+            </div>
+            
+            <!-- 成功消息 -->
+            <div id="successMessage" class="success-message">
+                <div class="circle-decoration"></div>
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="success-text">当前已获取root</div>
+                <div class="info-text">
+                    设备ROOT权限已获取成功<br>
+                    请手动安装阿尔法面具
+                </div>
+                
+                <!-- 新增的一键隐藏环境按钮 -->
+                <div class="btn-container" style="margin-top: 20px;">
+                    <button class="btn btn-teal" onclick="startHideProcess()">
+                        <span class="btn-glow"></span>
+                        <i class="fas fa-eye-slash"></i> 一键隐藏环境
+                    </button>
+                </div>
+                
+                <div class="info-text warning" style="margin-top: 20px;">
+                    <i class="fas fa-shield-alt"></i> 应用隐藏环境功能可绕过银行/游戏应用检测
+                </div>
+            </div>
+            
+            <!-- 隐藏环境进度 -->
+            <div id="hideProgressSection" class="progress-section">
+                <div class="circle-decoration"></div>
+                <div class="progress-text">正在隐藏ROOT环境...</div>
+                <极 class="progress-container">
+                    <div id="hideProgressBar" class="progress-bar">
+                        <div id="hideProgressPercent" class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="info-text">
+                    正在为设备进行root<br>
+                    当前检测ROOT状态
+                   
+                </div>
+                
+                <!-- 必须得隐藏root权限 -->
+                <div class="hide-list">
+                    <div class="hide-item">
+                        <div class="hide-icon">
+                            <i class="fas fa-bank"></i>
+                        </div>
+                        <div>X银行类应用检测😡</div>
+                    </div>
+                    <div class="hide-item">
+                        <div class="hide-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div>X游戏安全环境检测😡</div>
+                    </div>
+                    <div class="hide-item">
+                        <div class="hide-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>X设备完整性检查😡</div>
+                    </div>
+                    <div class="hide-item">
+                        <div class="hide-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>X隐藏Bootloader😡</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 隐藏环境完成 -->
+            <div id="hideSuccessSection" class="success-message">
+                <div class="circle-decoration"></div>
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="success-text">环境已成功隐藏！</div>
+                <div class="info-text">
+                    ROOT环境已完全隐藏<br>
+                    银行/游戏应用将无法检测ROOT状态
+                </div>
+                
+                <!-- 完成状态图标 -->
+                <div class="hide-list">
+                    <div class="hide-item flash-green">
+                        <div class="hide-icon">
+                            <i class="fas fa-check-circle" style="color:#4CAF50"></i>
+                        </div>
+                        <div>隐藏Magisk应用</div>
+                    </div>
+                    <div class="hide-item flash-green">
+                        <div class="hide-icon">
+                            <i class="fas fa-check-circle" style="color:#4CAF50"></i>
+                        </div>
+                        <div>已配置隐藏应用列表</div>
+                    </div>
+                    <div class="hide-item flash-green">
+                        <div class="hide-icon">
+                            <i class="fas fa-check-circle" style="color:#4CAF50"></i>
+                        </div>
+                        <div>Bootloader己隐藏</div>
+                    </div>
+                    <div class="hide-item flash-green">
+                        <div class="hide-icon">
+                            <i class="fas fa-check-circle" style="color:#4CAF50"></i>
+                        </div>
+                        <div>启用Magisk白名单</div>
+                    </div>
+                </div>
+                
+                <!-- 新增操作状态日志 -->
+                <div class="log-section" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                    <div class="info-text">刷入状态：</div>
+                    <div id="statusLog" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; max-height: 150px; overflow-y: auto; font-family: monospace; text-align: left; margin: 15px 0;">
+                        <div class="log-entry">> root成功请将手机重启</div>
+                        <div class="log-entry">> 已刷入环境模块...</div>
+                        <div class="log-entry">> 应用隐藏配置</div>
+                    </div>
+                </div>
+                
+                <!-- 返回按钮 -->
+                <div class="btn-container" style="margin-top: 20px;">
+                    <button class="btn btn-green" onclick="goBackToMain()">
+                        <i class="fas fa-home"></i> 返回主界面
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // DOM元素
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const shortUrlInput = document.getElementById('shortUrl');
-        const shareCountInput = document.getElementById('shareCount');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        const logContainer = document.getElementById('logContainer');
-        const resultContainer = document.getElementById('resultContainer');
-        const successCountEl = document.getElementById('successCount');
-        const errorCountEl = document.getElementById('errorCount');
-        const totalTimeEl = document.getElementById('totalTime');
-        const avgSpeedEl = document.getElementById('avgSpeed');
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
         
-        // 状态变量
-        let isRunning = false;
-        let successCount = 0;
-        let errorCount = 0;
-        let startTime;
-        let totalRequests = 0;
-        let completedRequests = 0;
-        let controller = null;
+        // 更新电池状态
+        function updateBattery() {
+            const battery = Math.floor(Math.random() * 30) + 70;
+            document.getElementById('batteryLevel').textContent = battery;
+        }
         
         // 初始化
-        startBtn.addEventListener('click', startSharing);
-        stopBtn.addEventListener('click', stopSharing);
+        function init() {
+            updateTime();
+            updateBattery();
+            setInterval(updateTime, 60000);
+            setInterval(updateBattery, 300000);
+            
+            // 初始隐藏所有部分
+            document.getElementById('blLockSection').style.display = 'none';
+            document.getElementById('unlockProgressSection').style.display = 'none';
+            document.getElementById('alphaProgressSection').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('hideProgressSection').style.display = 'none';
+            document.getElementById('hideSuccessSection').style.display = 'none';
+        }
         
-        // 开始分享
-        function startSharing() {
-            const shortUrl = shortUrlInput.value.trim();
-            const shareCount = parseInt(shareCountInput.value);
-            
-            // 验证输入
-            if (!shortUrl.startsWith('https://v.kuaishou.com/')) {
-                addLog('错误: 链接必须以 https://v.kuaishou.com/ 开头', 'error');
+        // 开始Root流程
+        function startRootProcess() {
+            const modelInput = document.getElementById('modelInput').value;
+            if (!modelInput) {
+                document.getElementById('modelInput').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('modelInput').classList.remove('shake');
+                }, 500);
                 return;
             }
             
-            if (isNaN(shareCount) || shareCount <= 0) {
-                addLog('错误: 分享次数必须大于0', 'error');
-                return;
-            }
+            // 显示BL锁未解锁提示
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('blLockSection').style.display = 'block';
+            document.getElementById('detectedModel').textContent = modelInput;
+        }
+        
+        // 返回上一步
+        function goBack() {
+            document.getElementById('blLockSection').style.display = 'none';
+            document.getElementById('inputSection').style.display = 'block';
+        }
+        
+        // 解锁BL锁
+        function unlockBootloader() {
+            const model = document.getElementById('detectedModel').textContent;
             
-            // 重置状态
-            resetState();
-            totalRequests = shareCount;
-            startTime = Date.now();
-            isRunning = true;
-            controller = new AbortController();
+            document.getElementById('blLockSection').style.display = 'none';
+            document.getElementById('unlockProgressSection').style.display = 'block';
+            document.getElementById('unlockModel').textContent = model;
             
-            // 显示UI元素
-            progressContainer.style.display = 'block';
-            logContainer.style.display = 'block';
-            resultContainer.style.display = 'none';
-            startBtn.style.display = 'none';
-            stopBtn.style.display = 'block';
+            // 模拟解锁进度
+            let progress = 0;
+            const progressBar = document.getElementById('unlockProgressBar');
+            const progressPercent = document.getElementById('unlockProgressPercent');
             
-            addLog(`开始分享: ${shortUrl}`, 'info');
-            addLog(`目标分享次数: ${shareCount}`, 'info');
-            addLog('正在解析作品ID...', 'info');
-            
-            // 解析作品ID和用户ID
-            parsePhotoInfo(shortUrl)
-                .then(({ photoId, userId }) => {
-                    addLog(`解析成功 - 作品ID: ${photoId}, 作者ID: ${userId}`, 'success');
-                    addLog('开始发送分享请求...', 'info');
+            const interval = setInterval(() => {
+                progress += Math.random() * 3;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
                     
-                    // 开始发送请求
-                    sendShareRequests(photoId, userId, shareCount);
-                })
-                .catch(error => {
-                    addLog(`解析失败: ${error.message}`, 'error');
-                    stopSharing();
-                });
-        }
-        
-        // 停止分享
-        function stopSharing() {
-            if (controller) {
-                controller.abort();
-            }
-            isRunning = false;
-            addLog('分享已停止', 'warning');
-            updateResult();
-            startBtn.style.display = 'block';
-            stopBtn.style.display = 'none';
-        }
-        
-        // 重置状态
-        function resetState() {
-            successCount = 0;
-            errorCount = 0;
-            completedRequests = 0;
-            logContainer.innerHTML = '';
-            progressFill.style.width = '0%';
-            progressText.textContent = '0% (0/0)';
-        }
-        
-        // 解析作品信息
-        async function parsePhotoInfo(shortUrl) {
-            try {
-                // 这里模拟解析过程，实际需要替换为真实解析逻辑
-                // 真实环境中可能需要调用后端API解析短链接
-                const match = shortUrl.match(/https:\/\/v\.kuaishou\.com\/(\w+)/);
-                if (!match) {
-                    throw new Error('无法解析短链接');
+                    // 解锁完成，开始刷入阿尔法面具
+                    setTimeout(() => {
+                        document.getElementById('unlockProgressSection').style.display = 'none';
+                        startAlphaProcess();
+                    }, 800);
                 }
                 
-                // 模拟延迟
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // 返回模拟的作品ID和用户ID
-                return {
-                    photoId: `mock_photo_${Math.random().toString(36).substr(2, 8)}`,
-                    userId: `mock_user_${Math.random().toString(36).substr(2, 8)}`
-                };
-            } catch (error) {
-                throw new Error(`解析作品信息失败: ${error.message}`);
-            }
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = Math.round(progress) + '%';
+            }, 200);
         }
         
-        // 发送分享请求
-        async function sendShareRequests(photoId, userId, shareCount) {
-            const batchSize = 5; // 每批请求数量
-            const delayBetweenBatches = 500; // 批次间延迟(毫秒)
+        // 开始刷入阿尔法面具
+        function startAlphaProcess() {
+            const model = document.getElementById('detectedModel').textContent;
             
-            for (let i = 0; i < shareCount && isRunning; i += batchSize) {
-                const currentBatchSize = Math.min(batchSize, shareCount - i);
-                const batchPromises = [];
-                
-                // 创建当前批次的请求
-                for (let j = 0; j < currentBatchSize; j++) {
-                    batchPromises.push(
-                        sendSingleShareRequest(photoId, userId, i + j + 1)
-                            .then(() => {
-                                successCount++;
-                            })
-                            .catch(() => {
-                                errorCount++;
-                            })
-                    );
+            document.getElementById('alphaProgressSection').style.display = 'block';
+            document.getElementById('alphaModel').textContent = model;
+            
+            // 模拟刷入进度
+            let progress = 0;
+            const progressBar = document.getElementById('alphaProgressBar');
+            const progressPercent = document.getElementById('alphaProgressPercent');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 2;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 刷入完成，显示成功消息
+                    setTimeout(() => {
+                        document.getElementById('alphaProgressSection').style.display = 'none';
+                        document.getElementById('successMessage').style.display = 'block';
+                    }, 800);
                 }
                 
-                // 等待当前批次完成
-                try {
-                    await Promise.all(batchPromises);
-                } catch (error) {
-                    addLog(`批次请求出错: ${error.message}`, 'error');
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = Math.round(progress) + '%';
+                
+                // 模拟关键步骤停顿
+                if (Math.round(progress) === 20) {
+                    progressPercent.textContent = "20% - 正在解压镜像...";
+                } else if (Math.round(progress) === 50) {
+                    progressPercent.textContent = "50% - 写入系统分区...";
+                } else if (Math.round(progress) === 80) {
+                    progressPercent.textContent = "80% - 验证安装...";
+                }
+            }, 300);
+        }
+        
+        // ================= 一键隐藏环境功能 =================
+        function startHideProcess() {
+            // 隐藏成功消息，显示进度界面
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('hideProgressSection').style.display = 'block';
+            
+            // 模拟隐藏环境过程
+            let progress = 0;
+            const progressBar = document.getElementById('hideProgressBar');
+            const progressPercent = document.getElementById('hideProgressPercent');
+            const hideItems = document.querySelectorAll('.hide-item');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 3;
+                
+                // 根据进度更新日志
+                if (progress > 20 && progress < 25) {
+                    progressPercent.textContent = "正在应用Magisk核心模式...";
+                } else if (progress > 40 && progress < 45) {
+                    progressPercent.textContent = "安装隐藏环境模块...";
+                } else if (progress > 60 && progress < 65) {
+                    progressPercent.textContent = "启用Zygisk保护机制...";
+                } else if (progress > 80 && progress < 85) {
+                    progressPercent.textContent = "注入安全签名...";
                 }
                 
-                // 更新进度
-                completedRequests += currentBatchSize;
-                updateProgress();
-                
-                // 添加批次完成日志
-                addLog(`已完成 ${completedRequests}/${totalRequests} 次分享`, 'info');
-                
-                // 如果不是最后一批，添加延迟
-                if (i + batchSize < shareCount && isRunning) {
-                    await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 进度完成后显示成功消息
+                    setTimeout(() => {
+                        document.getElementById('hideProgressSection').style.display = 'none';
+                        document.getElementById('hideSuccessSection').style.display = 'block';
+                    }, 800);
                 }
-            }
-            
-            // 所有请求完成
-            if (isRunning) {
-                addLog('所有分享请求已完成', 'success');
-                updateResult();
-            }
-            
-            isRunning = false;
-            startBtn.style.display = 'block';
-            stopBtn.style.display = 'none';
-        }
-        
-        // 发送单个分享请求
-        async function sendSingleShareRequest(photoId, userId, requestNum) {
-            const url = 'https://www.kuaishou.com/rest/zt/share/w/any';
-            
-            const headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Content-Type': 'application/json',
-                'Origin': 'https://www.kuaishou.com',
-                'Referer': 'https://www.kuaishou.com/'
-            };
-            
-            const data = {
-                kpn: 'KUAISHOU_VISION',
-                kpf: 'PC_WEB',
-                subBiz: 'SINGLE_ROW_WEB',
-                sdkVersion: '1.1.2.2.0',
-                shareChannel: 'WECHAT',
-                shareMethod: 'PICTURE',
-                shareObjectId: photoId,
-                extTokenStoreParams: {
-                    queries: {
-                        photoId: photoId,
-                        videoType: 'short-video'
-                    }
-                },
-                photoAuthorId: userId
-            };
-            
-            try {
-                // 注意: 实际浏览器中直接请求可能会被CORS阻止
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(data),
-                    signal: controller.signal,
-                    mode: 'no-cors' // 尝试绕过CORS，但效果有限
-                });
                 
-                // 由于no-cors模式，我们无法读取响应内容
-                addLog(`请求 ${requestNum}: 已发送`, 'success');
-                return true;
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    throw error;
-                }
-                addLog(`请求 ${requestNum} 失败: ${error.message}`, 'error');
-                throw error;
-            }
+                progressBar.style.width = progress + '%';
+                
+                // 当进度达到某些点时，显示相应的项目完成状态
+                if (progress > 25) hideItems[0].innerHTML = '<div class="hide-icon"><i class="fas fa-check-circle" style="color:#4CAF50"></i></div><div>银行类应用检测</div>';
+                if (progress > 50) hideItems[1].innerHTML = '<div class="hide-icon"><i class="fas fa-check-circle" style="color:#4CAF50"></i></div><div>游戏安全环境检测</div>';
+                if (progress > 75) hideItems[2].innerHTML = '<div class="hide-icon"><i class="fas fa-check-circle" style="color:#4CAF50"></i></div><div>设备完整性检查</div>';
+                if (progress > 95) hideItems[3].innerHTML = '<div class="hide-icon"><i class="fas fa-check-circle" style="color:#4CAF50"></i></div><div>Bootloader锁定检测</div>';
+                
+            }, 200);
         }
         
-        // 更新进度
-        function updateProgress() {
-            const percent = Math.round((completedRequests / totalRequests) * 100);
-            progressFill.style.width = `${percent}%`;
-            progressText.textContent = `${percent}% (${completedRequests}/${totalRequests})`;
+        // 返回主界面
+        function goBackToMain() {
+            document.getElementById('hideSuccessSection').style.display = 'none';
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('modelInput').value = '';
         }
         
-        // 更新结果
-        function updateResult() {
-            const totalTime = (Date.now() - startTime) / 1000;
-            const avgSpeed = totalRequests / totalTime;
-            
-            successCountEl.textContent = successCount;
-            errorCountEl.textContent = errorCount;
-            totalTimeEl.textContent = totalTime.toFixed(2);
-            avgSpeedEl.textContent = avgSpeed.toFixed(2);
-            resultContainer.style.display = 'block';
-            
-            addLog(`分享完成! 成功: ${successCount}, 失败: ${errorCount}, 耗时: ${totalTime.toFixed(2)}秒`, 'info');
-        }
-        
-        // 添加日志
-        function addLog(message, type = 'info') {
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry ${type}`;
-            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContainer.appendChild(logEntry);
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
+        // 初始化页面
+        window.onload = init;
     </script>
 </body>
 </html>
