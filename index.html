@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独处刷快手分享量工具</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #ff5722;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #e64a19;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .log-container {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            color: #4caf50;
+        }
+        .error {
+            color: #f44336;
+        }
+        .warning {
+            color: #ff9800;
+        }
+        .info {
+            color: #2196f3;
+        }
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        .tips {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>快手作品分享工具</h1>
+        
+        <div class="tips">
+            <strong>作者：独处</strong>
+            <ol>
+                <li>作者声明：输入快手作品短链接（如：https://v.kuaishou.com/xxxxxx）</li>
+                <li>设置需要分享的次数</li>
+                <li>点击"开始分享"按钮</li>
+                <li>如需绕过浏览器限制，请使用 Chrome 并添加启动参数：<code>--disable-web-security --user-data-dir=/tmp/chrome</code></li>
+            </ol>
+        </div>
+        
+        <div class="form-group">
+            <label for="shortUrl">快手作品链接</label>
+            <input type="text" id="shortUrl" placeholder="https://v.kuaishou.com/xxxxxx">
+        </div>
+        
+        <div class="form-group">
+            <label for="shareCount">分享次数</label>
+            <input type="number" id="shareCount" placeholder="请输入分享次数" min="1" value="100">
+        </div>
+        
+        <button id="startBtn">开始分享</button>
+        <button id="stopBtn" style="background-color: #f44336; display: none;">停止分享</button>
+        
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText">0% (0/0)</div>
+        </div>
+        
+        <div class="log-container" id="logContainer"></div>
+        
+        <div class="result-container" id="resultContainer">
+            <h3>分享结果</h3>
+            <p>成功次数: <span id="successCount">0</span></p>
+            <p>失败次数: <span id="errorCount">0</span></p>
+            <p>总耗时: <span id="totalTime">0</span> 秒</p>
+            <p>平均速度: <span id="avgSpeed">0</span> 次/秒</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM元素
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const shortUrlInput = document.getElementById('shortUrl');
+        const shareCountInput = document.getElementById('shareCount');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const logContainer = document.getElementById('logContainer');
+        const resultContainer = document.getElementById('resultContainer');
+        const successCountEl = document.getElementById('successCount');
+        const errorCountEl = document.getElementById('errorCount');
+        const totalTimeEl = document.getElementById('totalTime');
+        const avgSpeedEl = document.getElementById('avgSpeed');
+        
+        // 状态变量
+        let isRunning = false;
+        let successCount = 0;
+        let errorCount = 0;
+        let startTime;
+        let totalRequests = 0;
+        let completedRequests = 0;
+        let controller = null;
+        
+        // 初始化
+        startBtn.addEventListener('click', startSharing);
+        stopBtn.addEventListener('click', stopSharing);
+        
+        // 开始分享
+        function startSharing() {
+            const shortUrl = shortUrlInput.value.trim();
+            const shareCount = parseInt(shareCountInput.value);
+            
+            // 验证输入
+            if (!shortUrl.startsWith('https://v.kuaishou.com/')) {
+                addLog('错误: 链接必须以 https://v.kuaishou.com/ 开头', 'error');
+                return;
+            }
+            
+            if (isNaN(shareCount) || shareCount <= 0) {
+                addLog('错误: 分享次数必须大于0', 'error');
+                return;
+            }
+            
+            // 重置状态
+            resetState();
+            totalRequests = shareCount;
+            startTime = Date.now();
+            isRunning = true;
+            controller = new AbortController();
+            
+            // 显示UI元素
+            progressContainer.style.display = 'block';
+            logContainer.style.display = 'block';
+            resultContainer.style.display = 'none';
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+            
+            addLog(`开始分享: ${shortUrl}`, 'info');
+            addLog(`目标分享次数: ${shareCount}`, 'info');
+            addLog('正在解析作品ID...', 'info');
+            
+            // 解析作品ID和用户ID
+            parsePhotoInfo(shortUrl)
+                .then(({ photoId, userId }) => {
+                    addLog(`解析成功 - 作品ID: ${photoId}, 作者ID: ${userId}`, 'success');
+                    addLog('开始发送分享请求...', 'info');
+                    
+                    // 开始发送请求
+                    sendShareRequests(photoId, userId, shareCount);
+                })
+                .catch(error => {
+                    addLog(`解析失败: ${error.message}`, 'error');
+                    stopSharing();
+                });
+        }
+        
+        // 停止分享
+        function stopSharing() {
+            if (controller) {
+                controller.abort();
+            }
+            isRunning = false;
+            addLog('分享已停止', 'warning');
+            updateResult();
+            startBtn.style.display = 'block';
+            stopBtn.style.display = 'none';
+        }
+        
+        // 重置状态
+        function resetState() {
+            successCount = 0;
+            errorCount = 0;
+            completedRequests = 0;
+            logContainer.innerHTML = '';
+            progressFill.style.width = '0%';
+            progressText.textContent = '0% (0/0)';
+        }
+        
+        // 解析作品信息
+        async function parsePhotoInfo(shortUrl) {
+            try {
+                // 这里模拟解析过程，实际需要替换为真实解析逻辑
+                // 真实环境中可能需要调用后端API解析短链接
+                const match = shortUrl.match(/https:\/\/v\.kuaishou\.com\/(\w+)/);
+                if (!match) {
+                    throw new Error('无法解析短链接');
+                }
+                
+                // 模拟延迟
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 返回模拟的作品ID和用户ID
+                return {
+                    photoId: `mock_photo_${Math.random().toString(36).substr(2, 8)}`,
+                    userId: `mock_user_${Math.random().toString(36).substr(2, 8)}`
+                };
+            } catch (error) {
+                throw new Error(`解析作品信息失败: ${error.message}`);
+            }
+        }
+        
+        // 发送分享请求
+        async function sendShareRequests(photoId, userId, shareCount) {
+            const batchSize = 5; // 每批请求数量
+            const delayBetweenBatches = 500; // 批次间延迟(毫秒)
+            
+            for (let i = 0; i < shareCount && isRunning; i += batchSize) {
+                const currentBatchSize = Math.min(batchSize, shareCount - i);
+                const batchPromises = [];
+                
+                // 创建当前批次的请求
+                for (let j = 0; j < currentBatchSize; j++) {
+                    batchPromises.push(
+                        sendSingleShareRequest(photoId, userId, i + j + 1)
+                            .then(() => {
+                                successCount++;
+                            })
+                            .catch(() => {
+                                errorCount++;
+                            })
+                    );
+                }
+                
+                // 等待当前批次完成
+                try {
+                    await Promise.all(batchPromises);
+                } catch (error) {
+                    addLog(`批次请求出错: ${error.message}`, 'error');
+                }
+                
+                // 更新进度
+                completedRequests += currentBatchSize;
+                updateProgress();
+                
+                // 添加批次完成日志
+                addLog(`已完成 ${completedRequests}/${totalRequests} 次分享`, 'info');
+                
+                // 如果不是最后一批，添加延迟
+                if (i + batchSize < shareCount && isRunning) {
+                    await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
+                }
+            }
+            
+            // 所有请求完成
+            if (isRunning) {
+                addLog('所有分享请求已完成', 'success');
+                updateResult();
+            }
+            
+            isRunning = false;
+            startBtn.style.display = 'block';
+            stopBtn.style.display = 'none';
+        }
+        
+        // 发送单个分享请求
+        async function sendSingleShareRequest(photoId, userId, requestNum) {
+            const url = 'https://www.kuaishou.com/rest/zt/share/w/any';
+            
+            const headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Content-Type': 'application/json',
+                'Origin': 'https://www.kuaishou.com',
+                'Referer': 'https://www.kuaishou.com/'
+            };
+            
+            const data = {
+                kpn: 'KUAISHOU_VISION',
+                kpf: 'PC_WEB',
+                subBiz: 'SINGLE_ROW_WEB',
+                sdkVersion: '1.1.2.2.0',
+                shareChannel: 'WECHAT',
+                shareMethod: 'PICTURE',
+                shareObjectId: photoId,
+                extTokenStoreParams: {
+                    queries: {
+                        photoId: photoId,
+                        videoType: 'short-video'
+                    }
+                },
+                photoAuthorId: userId
+            };
+            
+            try {
+                // 注意: 实际浏览器中直接请求可能会被CORS阻止
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(data),
+                    signal: controller.signal,
+                    mode: 'no-cors' // 尝试绕过CORS，但效果有限
+                });
+                
+                // 由于no-cors模式，我们无法读取响应内容
+                addLog(`请求 ${requestNum}: 已发送`, 'success');
+                return true;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw error;
+                }
+                addLog(`请求 ${requestNum} 失败: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        // 更新进度
+        function updateProgress() {
+            const percent = Math.round((completedRequests / totalRequests) * 100);
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `${percent}% (${completedRequests}/${totalRequests})`;
+        }
+        
+        // 更新结果
+        function updateResult() {
+            const totalTime = (Date.now() - startTime) / 1000;
+            const avgSpeed = totalRequests / totalTime;
+            
+            successCountEl.textContent = successCount;
+            errorCountEl.textContent = errorCount;
+            totalTimeEl.textContent = totalTime.toFixed(2);
+            avgSpeedEl.textContent = avgSpeed.toFixed(2);
+            resultContainer.style.display = 'block';
+            
+            addLog(`分享完成! 成功: ${successCount}, 失败: ${errorCount}, 耗时: ${totalTime.toFixed(2)}秒`, 'info');
+        }
+        
+        // 添加日志
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
